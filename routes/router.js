@@ -6,7 +6,7 @@ router.get("/", async (req, res) => {
   console.log("page hit");
 
   try {
-    const result = await dbModel.getRestaurants();
+    const result = await dbModel.getItems();
     res.render("index", { restaurant: result });
 
     //Output the results of the query to the Heroku Logs
@@ -17,11 +17,11 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.post("/addRestaurant", async (req, res) => {
+router.post("/addItem", async (req, res) => {
   console.log("form submit", req.body);
   console.log(req.body);
   try {
-    const success = await dbModel.addRestaurant(req.body);
+    const success = await dbModel.addItem(req.body);
     if (success) {
       res.redirect("/");
     } else {
@@ -35,12 +35,12 @@ router.post("/addRestaurant", async (req, res) => {
   }
 });
 
-router.get("/deleteRestaurant", async (req, res) => {
+router.get("/deleteItem", async (req, res) => {
   console.log("delete user");
   console.log(req.query);
   let restaurantID = req.query.id;
   if (restaurantID) {
-    const success = await dbModel.deleteRestaurant(restaurantID);
+    const success = await dbModel.deleteItem(restaurantID);
     if (success) {
       res.redirect("/");
     } else {
@@ -51,18 +51,38 @@ router.get("/deleteRestaurant", async (req, res) => {
   }
 });
 
-router.get("/review", async (req, res) => {
-  const restaurantId = req.query.id;
 
+router.get("/increaseQuantity", async (req, res) => {
+  const itemId = req.query.id;
   try {
-    const restaurant = await dbModel.getRestaurantById(restaurantId);
-    const result = await dbModel.getReviewRestaurant(restaurantId);
-    res.render("review", { restaurant: result, name: restaurant, id: restaurantId });
-
-    console.log(result);
+    const success = await dbModel.increaseItemQuantity(itemId);
+    if (success) {
+      res.redirect("/");
+    } else {
+      res.render("error", { message: "Error updating item quantity" });
+      console.log("Error updating item quantity");
+    }
   } catch (err) {
-    res.render("error", { message: "Error reading from MySQL" });
-    console.log("Error reading from mysql");
+    res.render("error", { message: "Error updating item quantity" });
+    console.log("Error updating item quantity");
+    console.log(err);
+  }
+});
+
+router.get("/decreaseQuantity", async (req, res) => {
+  const itemId = req.query.id;
+  try {
+    const success = await dbModel.decreaseItemQuantity(itemId);
+    if (success) {
+      res.redirect("/");
+    } else {
+      res.render("error", { message: "Error updating item quantity" });
+      console.log("Error updating item quantity");
+    }
+  } catch (err) {
+    res.render("error", { message: "Error updating item quantity" });
+    console.log("Error updating item quantity");
+    console.log(err);
   }
 });
 
