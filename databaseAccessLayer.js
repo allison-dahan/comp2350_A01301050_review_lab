@@ -61,11 +61,9 @@ async function increaseItemQuantity(purchase_item_id) {
   let sqlUpdateItem = `
     UPDATE purchase_item
     SET quantity = quantity + 1
-    WHERE purchase_item_id = :purchase_item_id;
+    WHERE purchase_item_id = ?;
   `;
-  let params = {
-    purchase_item_id: purchase_item_id,
-  };
+  let params = [purchase_item_id];
   try {
     await database.query(sqlUpdateItem, params);
     return true;
@@ -79,11 +77,9 @@ async function decreaseItemQuantity(purchase_item_id) {
   let sqlUpdateItem = `
     UPDATE purchase_item
     SET quantity = quantity - 1
-    WHERE purchase_item_id = :purchase_item_id;
+    WHERE purchase_item_id = ?;
   `;
-  let params = {
-    purchase_item_id: purchase_item_id,
-  };
+  let params = [purchase_item_id];
   try {
     await database.query(sqlUpdateItem, params);
     return true;
